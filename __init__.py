@@ -34,7 +34,6 @@ def exportData():
             "KOMCardModificationDate": '???',
             "KOMCardTags": e.tags,
         }
-
     def exportCards(spacingIDs, deckID):
         spacings = _map(mw.col.getCard, spacingIDs)
 
