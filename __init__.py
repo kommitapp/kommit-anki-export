@@ -32,7 +32,7 @@ def exportData():
             "KOMCardNotes": e.fields[2],
             "KOMCardCreationDate": str(e.id),
             "KOMCardModificationDate": '???',
-            "KOMCard": e.data,
+            "KOMCardTags": e.tags,
         }
 
     def exportCards(spacingIDs, deckID):
