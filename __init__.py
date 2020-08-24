@@ -30,6 +30,8 @@ def exportSpacing(e, forward):
 	return {
 		'KOMSpacingID': Template('$id-$direction').substitute(id=e.id, direction=('forward' if forward else 'backward')),
 		'KOMSpacingDueDate': str(e.due),
+		'KOMSpacingInterval': e.ivl,
+		'KOMSpacingMultiplier': e.factor / 1000,
 		'KOMSpacingIsSuspended': e.queue == -1,
 		'data': 'json.dumps(e)',
 		'queue': e.queue,
