@@ -30,7 +30,7 @@ def exportData():
             "KOMCardFrontText": e.fields[0],
             "KOMCardRearText": e.fields[1],
             "KOMCardNotes": e.fields[2],
-            "KOMCardCreationDate": '???',
+            "KOMCardCreationDate": str(e.id),
             "KOMCardModificationDate": '???',
             "KOMCard": e.data,
         }
