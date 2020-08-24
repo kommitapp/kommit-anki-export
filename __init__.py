@@ -22,20 +22,20 @@ def exportNotes(spacings):
 
 def exportNote(e):
 	return {
-		"KOMSpacingID": spacing.id,
-		"data": 'json.dumps(item)',
+		'KOMSpacingID': spacing.id,
+		'data': 'json.dumps(item)',
 	}
 
 def exportCard(e, deckID):
 	return {
-		"KOMCardID": str(e.id),
-		"KOMCardDeckID": deckID,
-		"KOMCardFrontText": e.fields[0],
-		"KOMCardRearText": e.fields[1],
-		"KOMCardNotes": e.fields[2],
-		"KOMCardCreationDate": str(e.id),
-		"KOMCardModificationDate": str(e.mod),
-		"KOMCardTags": e.tags,
+		'KOMCardID': str(e.id),
+		'KOMCardDeckID': deckID,
+		'KOMCardFrontText': e.fields[0],
+		'KOMCardRearText': e.fields[1],
+		'KOMCardNotes': e.fields[2],
+		'KOMCardCreationDate': str(e.id),
+		'KOMCardModificationDate': str(e.mod),
+		'KOMCardTags': e.tags,
 	}
 
 def exportCards(spacingIDs, deckID):
@@ -54,11 +54,11 @@ def exportCards(spacingIDs, deckID):
 
 def exportDeck(e):
 	return {
-		"KOMDeckID": str(e['id']),
-		"KOMDeckName": e['name'],
-		"KOMDeckCreationDate": str(e['id']),
-		"KOMDeckModificationDate": str(e['mod']),
-		"$KOMDeckCards": exportCards(mw.col.decks.cids(e['id'])[0:2], str(e['id'])),
+		'KOMDeckID': str(e['id']),
+		'KOMDeckName': e['name'],
+		'KOMDeckCreationDate': str(e['id']),
+		'KOMDeckModificationDate': str(e['mod']),
+		'$KOMDeckCards': exportCards(mw.col.decks.cids(e['id'])[0:2], str(e['id'])),
 	}
 
 def getDecks():
@@ -79,7 +79,7 @@ def SetupMenuItem():
 	action.triggered.connect(InterfaceMenuActionDidClick)
 
 	mw.form.menuTools.addAction(action)
-	
+
 # LIFECYCLE
 
 def LifecycleModuleDidLoad():
