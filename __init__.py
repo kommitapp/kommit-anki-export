@@ -4,6 +4,8 @@ from aqt.qt import *
 
 import json
 from string import Template
+from anki import hooks
+from anki import exporting
 
 # INTERFACE
 
@@ -94,12 +96,36 @@ def ControlExportData():
 def SetupEverything():
 	SetupMenuItem()
 
+	SetupExportItem()
+
 def SetupMenuItem():
 	action = QAction('Export data to Kommit', mw)
 
 	action.triggered.connect(InterfaceMenuActionDidClick)
 
 	mw.form.menuTools.addAction(action)
+
+def SetupExportItem():
+	class KommitJSONExporter(exporting.Exporter):
+		key = _('Kommit JSON')
+		ext = '.json'
+		includeHTML = False
+
+		def __init__(self, col) -> None:
+			exporting.Exporter.__init__(self, col)
+
+		def doExport(self, file) -> None:
+			out = 'data'
+			self.count = len([])
+			file.write(out.encode('utf-8'))
+
+	def on_exporters_list_created(exporters):
+		def id(obj):
+			return ('%s (*%s)' % (obj.key, obj.ext), obj)
+
+		exporters.append(id(KommitJSONExporter))
+
+	hooks.exporters_list_created.append(on_exporters_list_created)
 
 # LIFECYCLE
 
