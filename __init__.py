@@ -6,6 +6,7 @@ import json
 from string import Template
 from anki import hooks
 from anki import exporting
+from datetime import datetime
 
 # INTERFACE
 
@@ -15,7 +16,10 @@ def InterfaceMenuActionDidClick():
 # CONTROL
 
 def _stringify(a):
-	return json.dumps(a, separators=(',', ':'))
+	return json.dumps(a, separators=(',', ':'), default=str)
+
+def _date(e):
+	return _stringify(datetime.fromtimestamp(e).isoformat())
 
 def _map(a, b):
 	return list(map(a, b))
@@ -23,18 +27,34 @@ def _map(a, b):
 def exportNotes(spacings):
 	return _map(mw.col.getCard, spacingIDs)
 
+def exportChronicle(e):
+	return {
+		'KOMChronicleDrawDate': _date(e[0] / 1000),
+	}
+
 def exportSpacing(e, forward):
 	if e == None:
 		return None;
 
+	chronicles = _map(exportChronicle, mw.col.db.all("select * from revlog where cid = " + str(e.id)))
+
 	return {
 		'KOMSpacingID': Template('$id-$direction').substitute(id=e.id, direction=('forward' if forward else 'backward')),
+		'KOMSpacingDrawDate': chronicles[0]['KOMChronicleDrawDate'],
 		'KOMSpacingDueDate': str(e.due),
 		'KOMSpacingInterval': e.ivl,
 		'KOMSpacingMultiplier': e.factor / 1000,
 		'KOMSpacingIsSuspended': e.queue == -1,
-		'data': 'json.dumps(e)',
+		'KOMSpacingChronicles': chronicles,
 		'queue': e.queue,
+		'reps': e.reps,
+		'lapses': e.lapses,
+		'left': e.left,
+		'odue': e.odue,
+		'odid': e.odid,
+		'flags': e.flags,
+		'data': e.data,
+		'list': mw.col.db.all("select * from revlog where cid = " + str(e.id)),
 	}
 
 def exportCard(e, deckID, forward, backward):
