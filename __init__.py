@@ -88,8 +88,12 @@ def getDecks():
 	# return list(map(exportDeck, [n for n in mw.col.decks.all() if n['name'] != 'Default']))
 	return list(map(exportDeck, [n for n in mw.col.decks.all() if n['name'] == 'english']))
 
+def writeJSON(e):
+	with open('/data/output.json', 'w') as outfile: 
+		json.dump(e, outfile, indent="	") 
+
 def ControlExportData():
-	showInfo(_stringify(getDecks()))
+	writeJSON(getDecks())
 
 # SETUP
 
