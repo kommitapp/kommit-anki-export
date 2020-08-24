@@ -19,7 +19,7 @@ def _stringify(a):
 	return json.dumps(a, separators=(',', ':'), default=str)
 
 def _date(e):
-	return _stringify(datetime.fromtimestamp(e).isoformat())
+	return datetime.utcfromtimestamp(e / 1000).strftime('%Y-%m-%dT%H:%M:%SZ')
 
 def _map(a, b):
 	return list(map(a, b))
@@ -64,8 +64,8 @@ def exportCard(e, deckID, forward, backward):
 		'KOMCardFrontText': e.fields[0],
 		'KOMCardRearText': e.fields[1],
 		'KOMCardNotes': e.fields[2],
-		'KOMCardCreationDate': str(e.id),
-		'KOMCardModificationDate': str(e.mod),
+		'KOMCardCreationDate': _date(e.id),
+		'KOMCardModificationDate': _date(e.mod * 1000),
 		'KOMCardTags': e.tags,
 		'$KOMCardSpacingForward': None if forward == None else forward,
 		'$KOMCardSpacingBackward': None if backward == None else backward,
@@ -101,8 +101,8 @@ def exportDeck(e):
 	return {
 		'KOMDeckID': str(e['id']),
 		'KOMDeckName': e['name'],
-		'KOMDeckCreationDate': str(e['id']),
-		'KOMDeckModificationDate': str(e['mod']),
+		'KOMDeckCreationDate': _date(e['id']),
+		'KOMDeckModificationDate': _date(e['mod']),
 		'$KOMDeckCards': exportCards(mw.col.decks.cids(e['id'])[0:2], str(e['id'])),
 	}
 
