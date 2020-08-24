@@ -41,13 +41,13 @@ def exportChronicle(e):
 	}
 
 	if e[4] < 0:
-		outputData['KOMChronicleIsLearning'] = True
 		outputData['KOMChronicleDueDate'] = _date(e[0] + e[7] + 1000 * 60 * 10)
+		outputData['KOMChronicleIsLearning'] = True
 
 	if e[4] > 0:
 		outputData['KOMChronicleDueDate'] = _date(e[0] + e[7] + e[4] * 1000 * 60 * 60 * 24)
-		outputData['KOMChronicleInterval'] = e[4]
 		outputData['KOMChronicleMultiplier'] = e[6] / 1000
+		outputData['KOMChronicleInterval'] = e[4]
 
 	return outputData
 
@@ -57,24 +57,22 @@ def exportSpacing(e, forward):
 
 	chronicles = _map(exportChronicle, mw.col.db.all("select * from revlog where cid = " + str(e.id)))
 
-	return {
+	outputData = {
 		'KOMSpacingID': Template('$id-$direction').substitute(id=e.nid, direction=('forward' if forward else 'backward')),
 		'KOMSpacingDrawDate': chronicles[0]['KOMChronicleDrawDate'],
-		'KOMSpacingDueDate': str(e.due),
-		'KOMSpacingInterval': e.ivl,
-		'KOMSpacingMultiplier': e.factor / 1000,
-		'KOMSpacingIsSuspended': e.queue == -1,
+		'KOMSpacingFlipDate': chronicles[0]['KOMChronicleFlipDate'],
+		'KOMSpacingDueDate': chronicles[0]['KOMChronicleDueDate'],
 		'KOMSpacingChronicles': chronicles,
-		'queue': e.queue,
-		'reps': e.reps,
-		'lapses': e.lapses,
-		'left': e.left,
-		'odue': e.odue,
-		'odid': e.odid,
-		'flags': e.flags,
-		'data': e.data,
-		'list': mw.col.db.all("select * from revlog where cid = " + str(e.id)),
 	}
+
+	if e.queue == -1:
+		outputData['KOMSpacingIsSuspended'] = True
+
+	if 'KOMSpacingMultiplier' in outputData:
+		outputData['KOMSpacingMultiplier'] = e.factor / 1000
+		outputData['KOMSpacingInterval'] = e.ivl,
+
+	return outputData
 
 def exportCard(e, deckID, forward, backward):
 	return {
