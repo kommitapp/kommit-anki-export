@@ -3,6 +3,7 @@ from aqt.utils import showInfo
 from aqt.qt import *
 
 import json
+from string import Template
 
 # INTERFACE
 
@@ -20,13 +21,19 @@ def _map(a, b):
 def exportNotes(spacings):
 	return _map(mw.col.getCard, spacingIDs)
 
-def exportNote(e):
+def exportSpacing(e, forward):
+	if e == None:
+		return None;
+
 	return {
-		'KOMSpacingID': spacing.id,
-		'data': 'json.dumps(item)',
+		'KOMSpacingID': Template('$id-$direction').substitute(id=e.id, direction=('forward' if forward else 'backward')),
+		'KOMSpacingDueDate': str(e.due),
+		'KOMSpacingIsSuspended': e.queue == -1,
+		'data': 'json.dumps(e)',
+		'queue': e.queue,
 	}
 
-def exportCard(e, deckID):
+def exportCard(e, deckID, forward, backward):
 	return {
 		'KOMCardID': str(e.id),
 		'KOMCardDeckID': deckID,
@@ -36,21 +43,35 @@ def exportCard(e, deckID):
 		'KOMCardCreationDate': str(e.id),
 		'KOMCardModificationDate': str(e.mod),
 		'KOMCardTags': e.tags,
+		'$KOMCardSpacingForward': None if forward == None else forward,
+		'$KOMCardSpacingBackward': None if backward == None else backward,
 	}
 
 def exportCards(spacingIDs, deckID):
 	spacings = _map(mw.col.getCard, spacingIDs)
 
-	cardIDs = []
-	cards = []
+	cardDataByID = {}
 
 	for e in spacings:
 		item = e.note()
-		if item.id not in cardIDs:
-			cardIDs.append(item.id)
-			cards.append(exportCard(item, deckID))
 
-	return cards
+		if 'a' not in cardDataByID:
+			cardDataByID[str(item.id)] = {
+				'note': item,
+				'forward': None,
+				'backward': None,
+			}
+
+		if e.type != 2:
+			cardDataByID[str(item.id)]['forward'] = e
+
+		if e.type == 2:
+			cardDataByID[str(item.id)]['backward'] = e
+
+	def _exportCard(e):
+		return exportCard(e['note'], deckID, exportSpacing(e['forward'], True), exportSpacing(e['backward'], False))
+
+	return _map(_exportCard, cardDataByID.values())
 
 def exportDeck(e):
 	return {
