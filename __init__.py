@@ -28,9 +28,28 @@ def exportNotes(spacings):
 	return _map(mw.col.getCard, spacingIDs)
 
 def exportChronicle(e):
-	return {
-		'KOMChronicleDrawDate': _date(e[0] / 1000),
+	outputData = {
+		'KOMChronicleDrawDate': _date(e[0]),
+		'KOMChronicleFlipDate': _date(e[0] + e[7]),
+		'KOMChronicleResponseDate': _date(e[0] + e[7]),
+		'KOMChronicleResponseType': [
+			'RESPONSE_AGAIN',
+			'RESPONSE_GOOD' if e[5] < 0 else 'RESPONSE_HARD',
+			'RESPONSE_GOOD',
+			'RESPONSE_EASY',
+		][e[3] - 1],
 	}
+
+	if e[4] < 0:
+		outputData['KOMChronicleIsLearning'] = True
+		outputData['KOMChronicleDueDate'] = _date(e[0] + e[7] + 1000 * 60 * 10)
+
+	if e[4] > 0:
+		outputData['KOMChronicleDueDate'] = _date(e[0] + e[7] + e[4] * 1000 * 60 * 60 * 24)
+		outputData['KOMChronicleInterval'] = e[4]
+		outputData['KOMChronicleMultiplier'] = e[6] / 1000
+
+	return outputData
 
 def exportSpacing(e, forward):
 	if e == None:
