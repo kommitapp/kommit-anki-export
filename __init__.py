@@ -39,7 +39,7 @@ def exportSpacing(e, forward):
 	chronicles = _map(exportChronicle, mw.col.db.all("select * from revlog where cid = " + str(e.id)))
 
 	return {
-		'KOMSpacingID': Template('$id-$direction').substitute(id=e.id, direction=('forward' if forward else 'backward')),
+		'KOMSpacingID': Template('$id-$direction').substitute(id=e.nid, direction=('forward' if forward else 'backward')),
 		'KOMSpacingDrawDate': chronicles[0]['KOMChronicleDrawDate'],
 		'KOMSpacingDueDate': str(e.due),
 		'KOMSpacingInterval': e.ivl,
