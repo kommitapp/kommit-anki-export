@@ -120,7 +120,7 @@ def exportDeck(e):
 		'KOMDeckName': e['name'],
 		'KOMDeckCreationDate': _date(e['id']),
 		'KOMDeckModificationDate': _date(e['mod']),
-		'$KOMDeckCards': exportCards(mw.col.decks.cids(e['id'])[0:2], str(e['id'])),
+		'$KOMDeckCards': exportCards(mw.col.decks.cids(e['id']), str(e['id'])),
 	}
 
 def getDecks():
