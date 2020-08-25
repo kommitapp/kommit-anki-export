@@ -96,17 +96,17 @@ def exportCards(spacingIDs, deckID):
 	for e in spacings:
 		item = e.note()
 
-		if 'a' not in cardDataByID:
+		if str(item.id) not in cardDataByID:
 			cardDataByID[str(item.id)] = {
 				'note': item,
 				'forward': None,
 				'backward': None,
 			}
 
-		if e.type != 2:
+		if e.ord != 1:
 			cardDataByID[str(item.id)]['forward'] = e
 
-		if e.type == 2:
+		if e.ord == 1:
 			cardDataByID[str(item.id)]['backward'] = e
 
 	def _exportCard(e):
