@@ -65,17 +65,14 @@ def exportSpacing(e, forward):
 		'KOMSpacingChronicles': chronicles,
 	}
 
-	if e.queue == -1:
-		outputData['KOMSpacingIsSuspended'] = True
-
 	if 'KOMSpacingMultiplier' in outputData:
 		outputData['KOMSpacingMultiplier'] = e.factor / 1000
 		outputData['KOMSpacingInterval'] = e.ivl,
 
 	return outputData
 
-def exportCard(e, deckID, forward, backward):
-	return {
+def exportCard(e, deckID, forward, backward, suspended = False):
+	outputData = {
 		# 'KOMCardID': str(e.id),
 		# 'KOMCardDeckID': deckID,
 		'KOMCardFrontText': e.fields[0],
@@ -87,6 +84,11 @@ def exportCard(e, deckID, forward, backward):
 		'$KOMCardSpacingForward': None if forward == None else forward,
 		'$KOMCardSpacingBackward': None if backward == None else backward,
 	}
+
+	if suspended:
+		outputData['KOMCardIsSuspended'] = True
+
+	return outputData
 
 def exportCards(spacingIDs, deckID):
 	spacings = _map(mw.col.getCard, spacingIDs)
@@ -110,7 +112,7 @@ def exportCards(spacingIDs, deckID):
 			cardDataByID[str(item.id)]['backward'] = e
 
 	def _exportCard(e):
-		return exportCard(e['note'], deckID, exportSpacing(e['forward'], True), exportSpacing(e['backward'], False))
+		return exportCard(e['note'], deckID, exportSpacing(e['forward'], True), exportSpacing(e['backward'], False), e['forward'].queue == -1 or e['backward'].queue == -1)
 
 	return _map(_exportCard, cardDataByID.values())
 
