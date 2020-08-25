@@ -58,7 +58,7 @@ def exportSpacing(e, forward):
 	chronicles = _map(exportChronicle, mw.col.db.all("select * from revlog where cid = " + str(e.id)))
 
 	outputData = {
-		'KOMSpacingID': Template('$id-$direction').substitute(id=e.nid, direction=('forward' if forward else 'backward')),
+		# 'KOMSpacingID': Template('$id-$direction').substitute(id=e.nid, direction=('forward' if forward else 'backward')),
 		'KOMSpacingDrawDate': chronicles[0]['KOMChronicleDrawDate'],
 		'KOMSpacingFlipDate': chronicles[0]['KOMChronicleFlipDate'],
 		'KOMSpacingDueDate': chronicles[0]['KOMChronicleDueDate'],
@@ -76,8 +76,8 @@ def exportSpacing(e, forward):
 
 def exportCard(e, deckID, forward, backward):
 	return {
-		'KOMCardID': str(e.id),
-		'KOMCardDeckID': deckID,
+		# 'KOMCardID': str(e.id),
+		# 'KOMCardDeckID': deckID,
 		'KOMCardFrontText': e.fields[0],
 		'KOMCardRearText': e.fields[1],
 		'KOMCardNotes': e.fields[2],
@@ -116,7 +116,7 @@ def exportCards(spacingIDs, deckID):
 
 def exportDeck(e):
 	return {
-		'KOMDeckID': str(e['id']),
+		# 'KOMDeckID': str(e['id']),
 		'KOMDeckName': e['name'],
 		'KOMDeckCreationDate': _date(e['id']),
 		'KOMDeckModificationDate': _date(e['mod']),
