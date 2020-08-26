@@ -59,15 +59,17 @@ def exportSpacing(e, forward):
 
 	outputData = {
 		# 'KOMSpacingID': Template('$id-$direction').substitute(id=e.nid, direction=('forward' if forward else 'backward')),
-		'KOMSpacingDrawDate': chronicles[-1]['KOMChronicleDrawDate'],
-		'KOMSpacingFlipDate': chronicles[-1]['KOMChronicleFlipDate'],
-		'KOMSpacingDueDate': chronicles[-1]['KOMChronicleDueDate'],
 		'KOMSpacingChronicles': chronicles,
 	}
 
-	if 'KOMChronicleInterval' in chronicles[-1]:
-		outputData['KOMSpacingInterval'] = chronicles[-1]['KOMChronicleInterval']
-		outputData['KOMSpacingMultiplier'] = chronicles[-1]['KOMChronicleMultiplier']
+	if len(chronicles) > 0:
+		outputData['KOMSpacingDrawDate'] = chronicles[-1]['KOMChronicleDrawDate']
+		outputData['KOMSpacingFlipDate'] = chronicles[-1]['KOMChronicleFlipDate']
+		outputData['KOMSpacingDueDate'] = chronicles[-1]['KOMChronicleDueDate']
+
+		if 'KOMChronicleInterval' in chronicles[-1]:
+			outputData['KOMSpacingInterval'] = chronicles[-1]['KOMChronicleInterval']
+			outputData['KOMSpacingMultiplier'] = chronicles[-1]['KOMChronicleMultiplier']
 
 	return outputData
 
