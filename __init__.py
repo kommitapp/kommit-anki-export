@@ -114,7 +114,7 @@ def exportCards(spacingIDs, deckID):
 			cardDataByID[str(item.id)]['backward'] = e
 
 	def _exportCard(e):
-		return exportCard(e['note'], deckID, exportSpacing(e['forward'], True), exportSpacing(e['backward'], False), e['forward'].queue == -1 or e['backward'].queue == -1)
+		return exportCard(e['note'], deckID, exportSpacing(e['forward'], True), exportSpacing(e['backward'], False), False if e['forward'] != None or e['backward'] != None else (e['forward'].queue == -1 or e['backward'].queue == -1))
 
 	return _map(_exportCard, cardDataByID.values())
 
