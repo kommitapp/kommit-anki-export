@@ -7,6 +7,7 @@ from string import Template
 from anki import hooks
 from anki import exporting
 from datetime import datetime
+from typing import List
 
 # INTERFACE
 
@@ -127,9 +128,9 @@ def exportDeck(e):
 		'$KOMDeckCards': exportCards(mw.col.decks.cids(e['id']), str(e['id'])),
 	}
 
-def getDecks():
+def getDecks(e):
 	# return list(map(exportDeck, [n for n in mw.col.decks.all() if n['name'] != 'Default']))
-	return list(map(exportDeck, [n for n in mw.col.decks.all() if n['name'] == 'export']))
+	return list(map(exportDeck, e))
 
 def writeJSON(e):
 	path = os.path.join(
@@ -140,7 +141,7 @@ def writeJSON(e):
 		json.dump(e, outfile)
 
 def ControlExportData():
-	writeJSON(getDecks())
+	writeJSON(getDecks([n for n in mw.col.decks.all()]))
 
 # SETUP
 
@@ -165,8 +166,17 @@ def SetupExportItem():
 		def __init__(self, col) -> None:
 			exporting.Exporter.__init__(self, col)
 
+		def deckIds(self) -> List[int]:
+			if self.cids:
+				return self.col.decks.for_card_ids(self.cids)
+			elif self.did:
+				return [self.did] + [x[1] for x in self.col.decks.children(self.did)]
+			else:
+				return []
+
 		def doExport(self, file) -> None:
-			out = 'data'
+			dids = self.deckIds()
+			out = json.dumps(getDecks([n for n in self.col.decks.all() if n["id"] in dids]))
 			self.count = len([])
 			file.write(out.encode('utf-8'))
 
