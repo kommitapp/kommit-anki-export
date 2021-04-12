@@ -137,7 +137,7 @@ def writeJSON(e):
 	)
 	
 	with open(path, 'w') as outfile: 
-		json.dump(e, outfile, indent="	") 
+		json.dump(e, outfile)
 
 def ControlExportData():
 	writeJSON(getDecks())
