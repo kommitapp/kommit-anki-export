@@ -132,7 +132,11 @@ def getDecks():
 	return list(map(exportDeck, [n for n in mw.col.decks.all() if n['name'] == 'export']))
 
 def writeJSON(e):
-	with open('/data/output.json', 'w') as outfile: 
+	path = os.path.join(
+	    QStandardPaths.writableLocation(QStandardPaths.DesktopLocation), "export.json"
+	)
+	
+	with open(path, 'w') as outfile: 
 		json.dump(e, outfile, indent="	") 
 
 def ControlExportData():
