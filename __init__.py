@@ -129,7 +129,7 @@ def exportDeck(e):
 
 def getDecks():
 	# return list(map(exportDeck, [n for n in mw.col.decks.all() if n['name'] != 'Default']))
-	return list(map(exportDeck, [n for n in mw.col.decks.all() if n['name'] == 'english']))
+	return list(map(exportDeck, [n for n in mw.col.decks.all() if n['name'] == 'export']))
 
 def writeJSON(e):
 	with open('/data/output.json', 'w') as outfile: 
