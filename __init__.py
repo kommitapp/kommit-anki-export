@@ -146,7 +146,7 @@ def ControlExportData():
 # SETUP
 
 def SetupEverything():
-	SetupMenuItem()
+	# SetupMenuItem()
 
 	SetupExportItem()
 
